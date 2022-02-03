@@ -37,6 +37,9 @@ const EmployeeForm = () => {
     },[imageUrl])
     const onClickToSubmit = (data) => {
         console.log(data);
+        if(imageUrl) {
+                
+        }
         dispatch(addEmployeeAction(data))
     }
     const selectedImage = (e) => {

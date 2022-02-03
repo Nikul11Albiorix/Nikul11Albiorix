@@ -11,3 +11,4 @@ export function addBankDetail (data) {
         payload : data
     }
 }
+
