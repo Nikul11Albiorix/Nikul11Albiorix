@@ -1,23 +1,17 @@
 import logo from './logo.svg';
 import './App.css';
-
+import Employee from './page/employee';
+import { BrowserRouter , Route , Routes , Navigate } from "react-router-dom"
+import BankDetail from './page/bankDetail';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/employee-form" element={<Employee />} />
+            <Route path="/bank-detail" element={<BankDetail />} />
+          </Routes>
+        </BrowserRouter>
     </div>
   );
 }
