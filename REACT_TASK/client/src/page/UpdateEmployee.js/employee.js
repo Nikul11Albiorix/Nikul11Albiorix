@@ -1,28 +1,30 @@
-import React , { useEffect, useState } from "react" 
+import React, { useEffect, useState } from "react" 
 import { Controller, useForm } from "react-hook-form"
 import { useDispatch , useSelector } from "react-redux"
-import ErrorHeandler from "../Widgets/ErrorLable"
-import {joiUpdatedMessage} from '../Utils/Apputils'
+import ErrorHeandler from "../../Widgets/ErrorLable"
+import {joiUpdatedMessage} from '../../Utils/Apputils'
 import "react-datepicker/dist/react-datepicker.css";
-import joi from "joi"
+import joi, { object } from "joi"
 import  DatePicker from "react-datepicker"
 import {joiResolver} from '@hookform/resolvers/joi'
-import { addEmployeeAction } from "../action/employeeAction"
+import { addEmployeeAction } from "../../action/employeeAction"
 import { Link, useNavigate } from "react-router-dom"
 
-const EmployeeForm = () => {
+const UpdateEmployeeForm = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const { addedemployeeDetail } = useSelector((state) => {
-        return state.employeeReduser
+    const { DetailOfAllEmployee , selectedEmployee } = useSelector((state) => {
+        return state.AddedEmployeeReduser
     })
+    
+    const [ selectedEmp , setSelectedEmp ] = useState()
     const { handleSubmit  , formState , control } = useForm({
         defaultValues : {
-            firstName : addedemployeeDetail?.firstName ,
-            lastName  : addedemployeeDetail?.lastName  ,
-            dob       : addedemployeeDetail?.dob       ,
-            email     : addedemployeeDetail?.email     , 
-            phone     : addedemployeeDetail?.phone
+            firstName : selectedEmployee?.EmployeeDetail?.firstName ,
+            lastName  : selectedEmployee?.EmployeeDetail?.lastName  ,
+            dob       : selectedEmployee?.EmployeeDetail?.dob       ,
+            email     : selectedEmployee?.EmployeeDetail?.email     , 
+            phone     : selectedEmployee?.EmployeeDetail?.phone
         },
         resolver : joiResolver(
             joi.object({
@@ -54,22 +56,29 @@ const EmployeeForm = () => {
                 ...data,
                 preview
             }
+            DetailOfAllEmployee[selectedEmployee.id - 1].EmployeeDetail = NewData
         } else {
             NewData = data
+            DetailOfAllEmployee[selectedEmployee.id - 1].EmployeeDetail = NewData
         }
-        dispatch(addEmployeeAction(NewData))
-        navigate("/bank-detail")
+        navigate("/update-BankDetail")
     }
     const selectedImage = (e) => {
         if(e.target.files[0]) {
            setImgUrl(e.target.files[0]) 
         }
     }
+    useEffect(() => {
+        if(!selectedEmployee) {
+            return
+        }
+        setSelectedEmp(selectedEmployee.EmployeeDetail)
+    },[selectedEmployee])
     return (
         <div className="container p-5">
         <div className="row">
             <div className="col-md-6 offset-md-3">
-            <h4>Add Employee</h4>
+            <h4>Update Employee</h4>
 
                 {preview && <img src={preview} width="100" height="100" />}
                 <input type="file" onChange={selectedImage} />
@@ -173,4 +182,4 @@ const EmployeeForm = () => {
     )
 }
 
- export default EmployeeForm
+ export default UpdateEmployeeForm

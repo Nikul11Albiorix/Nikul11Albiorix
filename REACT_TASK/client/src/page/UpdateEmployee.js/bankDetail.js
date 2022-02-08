@@ -1,53 +1,54 @@
 import React, { useEffect, useState } from "react" 
 import { Controller, useForm } from "react-hook-form"
 import { useDispatch , useSelector } from "react-redux"
-import ErrorHeandler from "../Widgets/ErrorLable"
-import {joiUpdatedMessage} from '../Utils/Apputils'
+import ErrorHeandler from "../../Widgets/ErrorLable"
+import {joiUpdatedMessage} from '../../Utils/Apputils'
 import "react-datepicker/dist/react-datepicker.css";
 import joi, { object } from "joi"
 import  DatePicker from "react-datepicker"
 import {joiResolver} from '@hookform/resolvers/joi'
-import { addBankDetail } from "../action/employeeAction"
+import { addBankDetail } from "../../action/employeeAction"
 import { useNavigate , Link } from "react-router-dom"
 
-const BankDetail = () => {
+const UpdateBankDetail = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [ employee , setEmployee ] = useState(false)
-    const { addedemployeeDetail , addedbankDetail } = useSelector((state) => {
-        return state.employeeReduser
+    
+    const { DetailOfAllEmployee , selectedEmployee } = useSelector((state) => {
+        return state.AddedEmployeeReduser
     })
     const { handleSubmit  , formState , control } = useForm({
         defaultValues : {
-            adharCard     : addedbankDetail?.adharCard, 
-            panCard       : addedbankDetail?.panCard, 
-            ifsc          : addedbankDetail?.ifsc,
-            accountNumber : addedbankDetail?.accountNumber  
+            adharCard     : selectedEmployee?.BankDetail?.adharCard, 
+            panCard       : selectedEmployee?.BankDetail?.panCard, 
+            ifsc          : selectedEmployee?.BankDetail?.ifsc,
+            accountNumber : selectedEmployee?.BankDetail?.accountNumber  
         },
         resolver : joiResolver(
             joi.object({
-                adharCard     : joi.number().required().label("adharCard").messages(joiUpdatedMessage),
-                panCard       : joi.string().required().label("panCard").messages(joiUpdatedMessage) ,
-                ifsc          : joi.string().required().label("ifsc").messages(joiUpdatedMessage), 
+                adharCard      : joi.number().required().label("adharCard").messages(joiUpdatedMessage),
+                panCard        : joi.string().required().label("panCard").messages(joiUpdatedMessage) ,
+                ifsc           : joi.string().required().label("ifsc").messages(joiUpdatedMessage), 
                 accountNumber  : joi.number().required().label("accountNumber").messages(joiUpdatedMessage),
         })
         )
     })
+    const onClickToSubmit = (data) => {
+        DetailOfAllEmployee[selectedEmployee.id - 1].BankDetail = data
+        navigate("/update-ProfessionalDetails")
+    }
     useEffect(() => {
-        if(!addedemployeeDetail) {
+        if(!DetailOfAllEmployee) {
             return
         }
         setEmployee(true)
-    },[addedemployeeDetail])
-    const onClickToSubmit = (data) => {
-        dispatch(addBankDetail(data))
-        navigate("/professional-details")
-    }
+    },[DetailOfAllEmployee])
     return (
         <div className="container p-5">
         <div className="row">
             <div className="col-md-6 offset-md-3">
-            <h4>Bank Detail</h4>
+            <h4>Update Bank Detail</h4>
                 {employee &&  <form onSubmit={handleSubmit(onClickToSubmit)}>
                     <Controller
                         name="adharCard"
@@ -88,7 +89,7 @@ const BankDetail = () => {
                     <Controller
                         name="ifsc"
                         control={control}
-                        render = {( {field:{value , onChange}}) => (
+                        render = {( {field:{value , onChange }}) => (
                             <>
                             <input
                                 type="text"
@@ -121,7 +122,7 @@ const BankDetail = () => {
                         </>
                     )}
                     />
-                    <Link to="/employee-form">
+                    <Link to="/update-EmployeeForm">
                     <button type="submit" className="btn btn-raised">
                         Back
                     </button>
@@ -133,15 +134,15 @@ const BankDetail = () => {
                 {
                     !employee && 
                     (
-                        <Link to="/employee-form">
+                        <Link to="/update-EmployeeForm">
                             <button>Return to fill Emplowee Detail</button>
                         </Link>
                     )
                 }
             </div>
-      </div>
+        </div>
     </div>
     )
 }
 
-export default BankDetail
+export default UpdateBankDetail
